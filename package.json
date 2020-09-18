@@ -1,0 +1,23 @@
+{
+  "name": "connection-simulation",
+  "version": "1.0.0",
+  "description": "Simulates Connections Between Consumers and Agents",
+  "main": "dist/app.js",
+  "author": "Swapan Roy",
+  "license": "ISC",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "test": "mocha --require ts-node/register tests/**/*.ts"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.1.3",
+    "ts-node": "^9.0.0",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "@types/chai": "^4.2.12",
+    "@types/mocha": "^8.0.3"
+  }
+}
