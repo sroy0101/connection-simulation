@@ -32,16 +32,8 @@ export interface AgentSpec {
  * @param lowMs - the low value of the time range 
  * @param highMs - the high value of the time range. 
  */
-export async function randomDelay (lowMs: number, highMs: number) {
-    // get the random delay value
-    if(highMs > lowMs) {    
-        let ms: number = Math.floor(Math.random() * (highMs - lowMs) + lowMs); 
-        await timeout(ms);
-    }
-}
-
-
-function timeout(ms: number) {
+export function randomDelay (lowMs: number, highMs: number) {
+    let ms: number = Math.floor(Math.random() * (highMs - lowMs) + lowMs);
     return (
         new Promise((resolve) => {
             setTimeout(()=> {resolve();}, ms)

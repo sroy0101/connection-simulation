@@ -5,10 +5,14 @@ import { Router } from "./router";
 export class Consumer {
     consumerSpec: ConsumerSpec;
     router: Router; 
+    isAbort: boolean;
+    connectionAttempts: number;
 
-    constructor (consumerSpec: ConsumerSpec) {
+    constructor (consumerSpec: ConsumerSpec, router: Router) {
         this.consumerSpec = consumerSpec;
-        this.router = Router.instance();
+        this.router = router;
+        this.isAbort = false;
+        this.connectionAttempts = 0; 
     }
 
     /**
@@ -16,16 +20,30 @@ export class Consumer {
      * Requests a connection to an agent through the router. 
      * If unsuccessful, retry after a random time within 30 ms. 
      */
-    startConnection = (): boolean => {
+    startConnection = async () => {
         let connected = false;
+        this.isAbort = false;
+        this.connectionAttempts = 0; 
         do {
             connected = this.router.connect(this.consumerSpec);
             if(!connected) {
                 // delay up to 33ms and try connecting again. 
-                randomDelay(0, 33); 
+                await randomDelay(0, 33);
+                this.connectionAttempts++; 
             }
-        } while(!connected); 
+            else {
+                this.connectionAttempts = 0;
+            }
+            
+        } while(!connected && !this.isAbort); 
         return connected;
+    }
+
+    /**
+     * Aborts an existing connection attempt. 
+     */
+    abortConnection = () => {
+        this.isAbort = true; 
     }
 
 }

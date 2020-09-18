@@ -41,7 +41,7 @@ export class Router {
      * Select the agents who will accept a call from this consumer, based on a matching criteria. 
      * @param consumerSpec - contains the consumer's properties. 
      */
-    selectAgentsForConsumer = (consumerSpec: ConsumerSpec) : Agent[] => {
+    private selectAgentsForConsumer = (consumerSpec: ConsumerSpec) : Agent[] => {
         let result: Agent[] = [];
         for(let agent of this.agentRegistry) {
             let agentSpec = agent.agentSpec;
