@@ -45,5 +45,14 @@ export class Consumer {
     abortConnection = () => {
         this.isAbort = true; 
     }
+    
+
+    /**
+     * Receiver of voice calls from an agent in response
+     * to message left for the agent.
+     */
+    messageCallBack = () => {
+        // do nothing for now
+    }
 
 }

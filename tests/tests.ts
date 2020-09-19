@@ -4,9 +4,10 @@ import * as chai from "chai";
 
 
 import { Consumer } from "../src/consumer";
-import {ConsumerSpec, AgentSpec, Accept, AcceptType} from "../src/common";
+import {ConsumerSpec, Message, AgentSpec, Accept, AcceptType} from "../src/common";
 import { Router } from "../src/router";
 import { Agent } from "../src/agent";
+import { assert } from "chai";
 
 const expect = chai.expect;
 let router = Router.instance();
@@ -60,10 +61,6 @@ describe('router tests', () => {
     })
 
     it('finds matching agent', () => {
-
-        // register a few agent 
-        //let agentSpecs : AgentSpec[] = createAgentSpecs();
-
         // create a stub for Agent.
         let agent1 : Agent = new Agent(agentSpecs[0], router);
         let agent2 : Agent = new Agent(agentSpecs[1], router);
@@ -74,27 +71,27 @@ describe('router tests', () => {
         router.registerAgent(agent2)
 
         // check it matches on age
-        let agents: Agent[] = router.selectAgentsForConsumer(consumerSpec); 
-        expect(agents).length(1);
-        expect(agents[0].agentSpec.accepts[0].value).to.equal('40');
+        let agents: Agent = router.selectAgentsForConsumer(consumerSpec); 
+        expect(agents.agentSpec.accepts[0].value).to.equal('40');
 
-        //check it matches on income and age for two separate agents
+        //check it always returns one agent even if there is 
         consumerSpec.income = 92000;
         agents = router.selectAgentsForConsumer(consumerSpec); 
-        expect(agents).length(2); 
-        expect(agents[0].agentSpec.accepts[0].value).to.equal('40');
-        expect(agents[1].agentSpec.accepts[0].value).to.equal('90000');
+        expect(agents.agentSpec.id).to.be.oneOf([1,2]);
     });
 });
 
 describe('agent tests', () => {
     let agentSpecs: AgentSpec[] = [];
-
+    
     before(() => {        
         let accepts1: Accept[] = [ {type: AcceptType.AGE, value: "40"}];         
         let accepts2: Accept[] = [ {type: AcceptType.INCOME, value: "90000"}];    
         agentSpecs.push({id: 1, accepts: accepts1}, {id: 2, accepts: accepts2});
-    })
+    });
+    afterEach(() => {
+        sinon.restore();
+    });    
     it('should stay busy for 50 to 300ms after a connection', () => {
         let agent : Agent = new Agent(agentSpecs[0], router);
         agent.connect(); 
@@ -104,10 +101,26 @@ describe('agent tests', () => {
         setTimeout(() => {
             expect(agent.isBusy).equal(false);
         }, 350);
-
-    })
-
-})
+    });
+    it('returns calls for left messages', () => {        
+        let consumer: Consumer = new Consumer(consumerSpec, router);
+        const spy = sinon.spy(consumer, 'messageCallBack');
+        
+        let agent : Agent = new Agent(agentSpecs[0], router);
+        let message: Message = {
+            phone: consumerSpec.phone,
+            message: "please call back",
+            callBack: consumer.messageCallBack
+        }
+        agent.saveMessage(message);
+        agent.saveMessage(message);
+        
+        setTimeout(() => {
+            expect(spy.callCount).equal(2);
+            expect(agent.messages.length).equal(0);
+        }, 2500)
+    });
+});
 
 
 

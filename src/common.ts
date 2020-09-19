@@ -27,6 +27,13 @@ export interface AgentSpec {
     id: number;
     accepts: Accept[];
 }
+
+export interface Message {
+    phone: number,
+    message: string,
+    callBack: Function
+}
+
 const acceptTypes : AcceptType[] = [
     AcceptType.AGE, 
     AcceptType.CARS, 
@@ -50,16 +57,16 @@ export function randomDelay (lowMs: number, highMs: number) {
 }
 
 /**
- * Uses faker package to create 12 agent specs data. 
+ * Uses faker package to create 20 agent specs data. 
  */
 export function createAgentSpecs(): AgentSpec[] {
     let agentSpecs: AgentSpec[] = []; 
-    const requiredSpecs = 12; 
+    const requiredSpecs = 20; 
     for(let x=0; x < requiredSpecs; x++) {
         let accepts: Accept[] = [];
         // allow one accepts per agent 
-        // randomly select one of the 5 accept types 
-        let randomType: number = Math.floor(Math.random() * (4 - 0));
+        // randomly select one of the 5 accept types (0 - 4)
+        let randomType: number = Math.floor(Math.random() * (5));
         let acceptValue = getAgentSpecsValue(acceptTypes[randomType]);
         let accept: Accept = {
             type: acceptTypes[randomType],
@@ -68,9 +75,7 @@ export function createAgentSpecs(): AgentSpec[] {
         accepts.push(accept);
         agentSpecs.push({id:x+1, accepts: accepts});   
     }
-
     return agentSpecs; 
-
 }
 
 const getAgentSpecsValue= (type: AcceptType) : any => {
@@ -78,11 +83,11 @@ const getAgentSpecsValue= (type: AcceptType) : any => {
     switch(type) {
         case AcceptType.AGE: 
         // age between 18 and 65
-        result = Math.floor(Math.random() * (65 - 18) + 18);
+        result = Math.floor(Math.random() * (65 - 18 + 1) + 18);
         break; 
         case AcceptType.CARS: 
         // 0 - 3 cars
-        result = Math.floor(Math.random() * (3 - 0));
+        result = Math.floor(Math.random() * 4);
         break; 
         case AcceptType.INCOME: 
         // 20000 - 1000000
@@ -95,7 +100,5 @@ const getAgentSpecsValue= (type: AcceptType) : any => {
         result = faker.random.boolean();
         break; 
     }
-
-
     return result;
 }

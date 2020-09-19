@@ -18,13 +18,10 @@ export class Router {
      */
     connect = (consumerSpec: ConsumerSpec): boolean => {
         let result: boolean = false;
-        let callableAgents: Agent[] = this.selectAgentsForConsumer(consumerSpec);
-
-        for(let agent of callableAgents) {
-            if(!agent.isBusy) {
-                agent.connect();
-                result = true;
-            }
+        let agent: Agent= this.selectAgentsForConsumer(consumerSpec);        
+        if(!agent.isBusy) {
+            agent.connect();
+            result = true;
         }
         return result;
     }
@@ -38,10 +35,11 @@ export class Router {
     
 
     /**
-     * Select the agents who will accept a call from this consumer, based on a matching criteria. 
+     * Selects and agents who will accept a call from this consumer, based on a matching criteria. 
+     * If multiple matching agents found, returns a randomly selected one.
      * @param consumerSpec - contains the consumer's properties. 
      */
-    selectAgentsForConsumer = (consumerSpec: ConsumerSpec) : Agent[] => {
+    selectAgentsForConsumer = (consumerSpec: ConsumerSpec) : Agent => {
         let result: Agent[] = [];
         for(let agent of this.agentRegistry) {
             let agentSpec = agent.agentSpec;
@@ -90,7 +88,9 @@ export class Router {
                 result.push(agent);
             }
         }
-        return result;
+        // If multiple agents found, pick one at random. 
+        let selectIndex = Math.floor(Math.random() * result.length);
+        return result[selectIndex];
     }
 
 }
