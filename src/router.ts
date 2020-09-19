@@ -4,7 +4,7 @@ import { AgentSpec } from "./common";
 
 
 export class Router {
-    private agentRegistry: Agent[] = [];
+    agentRegistry: Agent[] = [];
 
     // router has only one instance. 
     private static _instance: Router;     
@@ -41,7 +41,7 @@ export class Router {
      * Select the agents who will accept a call from this consumer, based on a matching criteria. 
      * @param consumerSpec - contains the consumer's properties. 
      */
-    private selectAgentsForConsumer = (consumerSpec: ConsumerSpec) : Agent[] => {
+    selectAgentsForConsumer = (consumerSpec: ConsumerSpec) : Agent[] => {
         let result: Agent[] = [];
         for(let agent of this.agentRegistry) {
             let agentSpec = agent.agentSpec;

@@ -7,10 +7,10 @@ export class Agent {
     isBusy: boolean;
     router: Router; 
     
-    constructor (agentSpec: AgentSpec) {
+    constructor (agentSpec: AgentSpec, router: Router) {
         this.agentSpec = agentSpec;
         this.isBusy = false;
-        this.router = Router.instance();
+        this.router = router;
         // Register with router
         this.router.registerAgent(this);         
     }
@@ -19,18 +19,12 @@ export class Agent {
      * Called to connect to agent. 
      * Sets itself to busy state - for a time period. 
      */
-    connect = async () => {
+    connect = () => {
         this.isBusy = true; 
         // Wait
 
         this.isBusy = false;
 
     }
-
-    // random delay - 50 to 300ms
-    randomDelay = async () => {
-
-    }
-
     
 }
