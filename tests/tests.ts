@@ -84,11 +84,32 @@ describe('router tests', () => {
         expect(agents).length(2); 
         expect(agents[0].agentSpec.accepts[0].value).to.equal('40');
         expect(agents[1].agentSpec.accepts[0].value).to.equal('90000');
-
-
     });
-
 });
+
+describe('agent tests', () => {
+    let agentSpecs: AgentSpec[] = [];
+
+    before(() => {        
+        let accepts1: Accept[] = [ {type: AcceptType.AGE, value: "40"}];         
+        let accepts2: Accept[] = [ {type: AcceptType.INCOME, value: "90000"}];    
+        agentSpecs.push({id: 1, accepts: accepts1}, {id: 2, accepts: accepts2});
+    })
+    it('should stay busy for 50 to 300ms after a connection', () => {
+        let agent : Agent = new Agent(agentSpecs[0], router);
+        agent.connect(); 
+        setTimeout(()=> {
+            expect(agent.isBusy).equal(true);
+        }, 45);
+        setTimeout(() => {
+            expect(agent.isBusy).equal(false);
+        }, 350);
+
+    })
+
+})
+
+
 
 
 

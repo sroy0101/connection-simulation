@@ -1,4 +1,5 @@
-import { AgentSpec } from "./common";
+import { random } from "faker";
+import { AgentSpec, randomDelay } from "./common";
 import { Router } from "./router";
 
 export class Agent {
@@ -21,9 +22,12 @@ export class Agent {
      */
     connect = () => {
         this.isBusy = true; 
-        // Wait
+        // Wait 50 to 300ms. 
+        randomDelay(50, 300).then(() => {
+            this.isBusy = false;            
+        })
+        return true;
 
-        this.isBusy = false;
 
     }
     
