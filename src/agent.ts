@@ -8,6 +8,9 @@ export class Agent {
     isBusy: boolean;
     router: Router; 
     messages: Message[];
+    // metrics
+    messagesReceived: number;
+    callsReceived: number;
     
     constructor (agentSpec: AgentSpec, router: Router) {
         this.agentSpec = agentSpec;
@@ -16,7 +19,9 @@ export class Agent {
         // Register with router
         this.router.registerAgent(this);
         this.messages = []; 
-        this.callConsumer();        
+        this.callConsumer();  
+        this.messagesReceived = 0;
+        this.callsReceived = 0;      
     }
     
     /**
@@ -38,6 +43,7 @@ export class Agent {
      */
     saveMessage = (message : Message) => {
         this.messages.push(message);
+        this.messagesReceived++;
     }
 
     /**

@@ -1,3 +1,4 @@
+"use strict"
 import {AcceptType, ConsumerSpec} from "./common";
 import { Agent } from "./agent";
 import { AgentSpec } from "./common";

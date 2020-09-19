@@ -1,3 +1,4 @@
+"use strict"
 import {ConsumerSpec, randomDelay} from "./common";
 import { Router } from "./router";
 
@@ -5,14 +6,21 @@ import { Router } from "./router";
 export class Consumer {
     consumerSpec: ConsumerSpec;
     router: Router; 
-    isAbort: boolean;
+    isAbort: boolean;    
+    connected: boolean;
+
+    // metrics
     connectionAttempts: number;
+    callbacksReceived: number;
 
     constructor (consumerSpec: ConsumerSpec, router: Router) {
         this.consumerSpec = consumerSpec;
         this.router = router;
-        this.isAbort = false;
+        this.isAbort = false;        
+        this.connected = false;
+
         this.connectionAttempts = 0; 
+        this.callbacksReceived = 0;
     }
 
     /**
@@ -21,12 +29,11 @@ export class Consumer {
      * If unsuccessful, retry after a random time within 30 ms. 
      */
     startConnection = async () => {
-        let connected = false;
         this.isAbort = false;
         this.connectionAttempts = 0; 
         do {
-            connected = this.router.connect(this.consumerSpec);
-            if(!connected) {
+            this.connected = this.router.connect(this.consumerSpec);
+            if(!this.connected) {
                 // delay up to 33ms and try connecting again. 
                 await randomDelay(0, 33);
                 this.connectionAttempts++; 
@@ -35,8 +42,8 @@ export class Consumer {
                 this.connectionAttempts = 0;
             }
             
-        } while(!connected && !this.isAbort); 
-        return connected;
+        } while(!this.connected && !this.isAbort); 
+        return this.connected;
     }
 
     /**
@@ -52,7 +59,7 @@ export class Consumer {
      * to message left for the agent.
      */
     messageCallBack = () => {
-        // do nothing for now
+        this.callbacksReceived++;
     }
 
 }

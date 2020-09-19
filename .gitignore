@@ -25,3 +25,6 @@ report.*.json
 *.njsproj
 *.sln
 *.sw?
+
+# generated report files 
+*.csv

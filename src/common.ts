@@ -1,5 +1,9 @@
 import * as faker from "faker";
 
+/** *********************************************
+ *              Common Types
+ */
+
 export interface ConsumerSpec {
     id: number;
     age: number;
@@ -42,6 +46,9 @@ const acceptTypes : AcceptType[] = [
     AcceptType.RENTING
 ];
 
+/** *********************************************
+ *              Shared Functions
+ */
 /**
  * Provides a asynchronous random delay within the given low and high range. 
  * @param lowMs - the low value of the time range 

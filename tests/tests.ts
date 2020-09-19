@@ -4,9 +4,10 @@ import * as chai from "chai";
 
 
 import { Consumer } from "../src/consumer";
-import {ConsumerSpec, Message, AgentSpec, Accept, AcceptType} from "../src/common";
+import {ConsumerSpec, Message, AgentSpec, Accept, AcceptType, randomDelay} from "../src/common";
 import { Router } from "../src/router";
 import { Agent } from "../src/agent";
+import { Report, ConsumerRecord } from "../src/report";
 import { assert } from "chai";
 
 const expect = chai.expect;
@@ -21,6 +22,7 @@ let consumerSpec: ConsumerSpec = {
     income: 80000,
     phone: 4045556666
 }
+let agentSpecs: AgentSpec[] = [];
 
 describe('consumer tests', () => {
     afterEach(() => {
@@ -53,7 +55,6 @@ describe('consumer tests', () => {
 });
 
 describe('router tests', () => {
-    let agentSpecs: AgentSpec[] = [];
     before(() => {        
         let accepts1: Accept[] = [ {type: AcceptType.AGE, value: "40"}];         
         let accepts2: Accept[] = [ {type: AcceptType.INCOME, value: "90000"}];    
@@ -82,8 +83,6 @@ describe('router tests', () => {
 });
 
 describe('agent tests', () => {
-    let agentSpecs: AgentSpec[] = [];
-    
     before(() => {        
         let accepts1: Accept[] = [ {type: AcceptType.AGE, value: "40"}];         
         let accepts2: Accept[] = [ {type: AcceptType.INCOME, value: "90000"}];    
@@ -118,9 +117,57 @@ describe('agent tests', () => {
         setTimeout(() => {
             expect(spy.callCount).equal(2);
             expect(agent.messages.length).equal(0);
-        }, 2500)
+        }, 3500)
     });
 });
+
+describe('create reports tests', () => {
+    before(() => {        
+        let accepts1: Accept[] = [ {type: AcceptType.AGE, value: "40"}];         
+        let accepts2: Accept[] = [ {type: AcceptType.INCOME, value: "90000"}];    
+        agentSpecs.push({id: 1, accepts: accepts1}, {id: 2, accepts: accepts2});
+    });
+    it('creates consumer Record', async () => {
+        let report: Report = new Report();
+
+        let consumer1: Consumer = new Consumer(consumerSpec, router);
+        consumer1.connected = true; 
+        consumer1.callbacksReceived = 10; 
+        report.updateConsumerRecord(consumer1); 
+
+        let consumer2: Consumer = new Consumer(consumerSpec, router);
+        consumer2.consumerSpec.id = 2;
+        consumer2.connected = false; 
+        consumer2.callbacksReceived = 2; 
+        report.updateConsumerRecord(consumer2); 
+
+        // report.consumerRecord
+        let record: Map<number, ConsumerRecord> = report.consumerRecord; 
+       
+        let connected: boolean = record.has(1)? record.get(1).connected : null;
+        let callbacksReceived: number = record.has(1)? record.get(1).callbacksReceived : null;
+       
+        expect(record.has(1)).equal(true);
+        expect(connected).equal(true);
+        expect(callbacksReceived).equal(10);
+
+        connected = record.has(1)? record.get(2).connected : null;
+        callbacksReceived = record.has(1)? record.get(2).callbacksReceived : null;
+        expect(record.has(2)).equal(true);
+        expect(connected).equal(false);
+        expect(callbacksReceived).equal(2);
+
+        // check CSV file save
+        report.createConsumerReport();
+        await(randomDelay(3000, 3500))
+            .then(() => {
+                expect(report.isFileSavedSuccess).equal(true);
+            }).catch((error)=> {
+                assert(false);
+            });
+    });
+
+})
 
 
 
