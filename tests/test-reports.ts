@@ -1,14 +1,10 @@
 import "mocha";
-import * as sinon from "sinon";
 import * as chai from "chai";
-
-
 import { Consumer } from "../src/consumer";
-import {ConsumerSpec, Message, AgentSpec, Accept, AcceptType, randomDelay} from "../src/common";
+import {ConsumerSpec, Accept, AcceptType } from "../src/common";
 import { Router } from "../src/router";
 import { Agent } from "../src/agent";
 import { Report, ConsumerRecord, AgentRecord } from "../src/report";
-import { assert } from "chai";
 
 const expect = chai.expect;
 let router = Router.instance();
