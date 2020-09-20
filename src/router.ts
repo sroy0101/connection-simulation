@@ -1,7 +1,7 @@
 "use strict"
 import {AcceptType, ConsumerSpec} from "./common";
 import { Agent } from "./agent";
-import { AgentSpec } from "./common";
+import { Message } from "./common";
 
 
 export class Router {
@@ -17,13 +17,21 @@ export class Router {
      * Finds a matching agent that can take the call and calls the agent from the agent registration table. 
      * @param consumerSpec - Contains the spec of the consumer trying to connect. 
      */
-    connect = (consumerSpec: ConsumerSpec): boolean => {
+    connect = (consumerSpec: ConsumerSpec, messageCallBack: Function): boolean => {
         let result: boolean = false;
         let agent: Agent= this.selectAgentsForConsumer(consumerSpec);        
         if(!agent.isBusy) {
             agent.connect();
             result = true;
+        } else {
+            let message: Message = {
+                phone: consumerSpec.phone,
+                message: 'please call me back.',
+                callBack: messageCallBack
+            };
+            agent.saveMessage(message);
         }
+
         return result;
     }
     /**

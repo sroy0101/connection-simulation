@@ -31,27 +31,14 @@ describe('consumer tests', () => {
     it('initiate a connection', () => {        
 
         // stub router connect request method to return true. 
-        sinon.stub(router, "connect").returns(true); 
+        let stub= sinon.stub(router, "connect").returns(true); 
 
         let consumer: Consumer = new Consumer(consumerSpec, router);
-        consumer.startConnection().then((result) => {  
-            expect(result).to.equal(true);
-        });
+        consumer.startConnection(); 
+        expect(stub.callCount).equal(1);
+        expect(consumer.connected).to.equal(true);
     });
-    it('retries if connection fails', async () => {
-        // stub router connect request method to return true. 
-        let connectCallCount = 0; 
-        sinon.stub(router, "connect").returns(false);
- 
-        let consumer: Consumer = new Consumer(consumerSpec, router);
-
-        setTimeout(()=> consumer.abortConnection(), 330);         
-
-        await consumer.startConnection().then((result) => {
-            expect(consumer.connectionAttempts).to.greaterThan(10);
-            expect(result).to.equal(false);
-        });
-    });
+    
 });
 
 describe('router tests', () => {
@@ -117,7 +104,6 @@ describe('agent tests', () => {
         await(randomDelay(2500, 3000))
         .then(() => {
             expect(spy.callCount).equal(2);
-            expect(agent.messages.length).equal(0);
         }).catch((error)=> {
             assert(false)
         });        

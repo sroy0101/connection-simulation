@@ -28,21 +28,11 @@ export class Consumer {
      * Requests a connection to an agent through the router. 
      * If unsuccessful, retry after a random time within 30 ms. 
      */
-    startConnection = async () => {
+    startConnection = () => {
         this.isAbort = false;
         this.connectionAttempts = 0; 
-        do {
-            this.connected = this.router.connect(this.consumerSpec);
-            if(!this.connected) {
-                // delay up to 33ms and try connecting again. 
-                await randomDelay(0, 33);
-                this.connectionAttempts++; 
-            }
-            else {
-                this.connectionAttempts = 0;
-            }
-            
-        } while(!this.connected && !this.isAbort); 
+        this.connected = this.router.connect(this.consumerSpec, this.messageCallBack);
+        
         return this.connected;
     }
 
@@ -53,13 +43,23 @@ export class Consumer {
         this.isAbort = true; 
     }
     
-
     /**
-     * Receiver of voice calls from an agent in response
+     * Receiver of calls from an agent in response
      * to message left for the agent.
+     * Returns busy 80% of the time. 
      */
-    messageCallBack = () => {
+    messageCallBack = () : boolean => {
+        let busy = false;
         this.callbacksReceived++;
+        if(Math.random() * 100 < 80) {
+            busy = true;
+        }
+        // if agent called back and was successful, means consumer is connected. 
+        if(!busy) {
+            this.connected = true; 
+        }
+
+        return busy;
     }
 
 }

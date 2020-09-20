@@ -51,14 +51,17 @@ export class Agent {
      * Then removes the message from the list. 
      */
     callConsumer = () => {
+        const PROCESS_MESSAGES_RATE_MS = 1000;
+
         const interval = setInterval(() => {
             if(!this.isBusy && this.messages.length) {
                 let message : Message = this.messages[0]; 
-                this.messages.splice(0, 1);
-                message.callBack();
+                // if the consumer was not busy, ie accepted the call, remove the message from message list. 
+                if(!message.callBack()) {
+                    this.messages.splice(0, 1);
+                }
             }
-        }, 1000)
-
+        }, PROCESS_MESSAGES_RATE_MS)
         return interval;
     }
 
