@@ -66,11 +66,11 @@ export class Report {
         const csvCreate = createCsvWriter( {
             path: FilePaths.consumerFilePath,
             header: [
-                {id: 'id', title: "ConsumerId"},
+                {id: 'id', title: "Consumer Id"},
                 {id: 'consumerSpec', title: "Consumer Spec"}
             ]
         });
-        let records = [{}];
+        let records = [];
         this.consumerRecord.forEach((value, key) => {
             let recordItem = {
                 id: key.toString(),
@@ -87,5 +87,73 @@ export class Report {
                 console.error(`Create consumer record file error.\n ${error}`);
             });
     }
+
+    createAgentReport = () => {
+        const csvCreate = createCsvWriter( {
+            path: FilePaths.agentFilePath,
+            header: [
+                {id: 'id', title: "Agent Id"},
+                {id: 'agentSpec', title: "Agent Spec"}
+            ]
+        });
+        let records = [];
+        this.agentRecord.forEach((value, key) => {
+            let recordItem = {
+                id: key.toString(),
+                agentSpec: JSON.stringify(value)
+            }
+            records.push(recordItem);
+        });
+        this.isFileSavedSuccess = false; 
+        let that = this;
+        csvCreate.writeRecords(records)
+            .then(() => {
+                that.isFileSavedSuccess = true;
+            }).catch((error) => {
+                console.error(`Create agent record file error.\n ${error}`);
+            });
+    }
+
+    createMetricsReport = () => {
+        const csvCreate = createCsvWriter( {
+            path: FilePaths.metricsFilePath,
+            header: [                
+                {id: 'agentId', title: 'Agent Id'},
+                {id: 'callsReceived', title: 'Received Calls'},
+                {id: 'messagesReceived', title: 'Received Messages'},
+                {id: 'consumerId', title: 'Consumer Id'},
+                {id: 'connected', title: 'Is Connected'},
+                {id: 'timesCalled', title: 'Received Callbacks'},
+
+            ]
+        });
+        let records = [];        
+        this.agentRecord.forEach((value, key) => {
+            let recordItem = {
+                agentId: key.toString(),
+                callsReceived: value.callsReceived.toString(),
+                messagesReceived: value.messagesReceived.toString()
+            }
+            records.push(recordItem);
+        });
+        this.consumerRecord.forEach((value, key) => {
+            let recordItem = {
+                consumerId: key.toString(),
+                connected: value.connected.toString(),
+                timesCalled: value.callbacksReceived.toString()
+            }
+            records.push(recordItem);
+        });
+        this.isFileSavedSuccess = false; 
+        let that = this;
+        csvCreate.writeRecords(records)
+            .then(() => {
+                that.isFileSavedSuccess = true;
+            }).catch((error) => {
+                console.error(`Create metrics record file error.\n ${error}`);
+            });
+    }
+
+
 
 }
