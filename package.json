@@ -6,8 +6,10 @@
   "author": "Swapan Roy",
   "license": "ISC",
   "scripts": {
-    "start": "tsc && node dist/app.js",
-    "test": "mocha --require ts-node/register tests/**/*.ts"
+    "build": "tsc",
+    "test": "mocha --exit --require ts-node/register tests/tests.ts",
+    "test-reports": "mocha --exit --require ts-node/register tests/test-reports.ts",
+    "test-e2e": "mocha --require ts-node/register tests/e2e/*.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",
@@ -23,6 +25,7 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "csv-writer": "^1.6.0"
+    "csv-writer": "^1.6.0",
+    "fs": "0.0.2"
   }
 }

@@ -64,25 +64,23 @@ export function randomDelay (lowMs: number, highMs: number) {
 }
 
 /**
- * Uses faker package to create 20 agent specs data. 
+ * Uses faker package to create an agent spec. 
  */
-export function createAgentSpecs(): AgentSpec[] {
-    let agentSpecs: AgentSpec[] = []; 
-    const requiredSpecs = 20; 
-    for(let x=0; x < requiredSpecs; x++) {
-        let accepts: Accept[] = [];
-        // allow one accepts per agent 
-        // randomly select one of the 5 accept types (0 - 4)
-        let randomType: number = Math.floor(Math.random() * (5));
-        let acceptValue = getAgentSpecsValue(acceptTypes[randomType]);
-        let accept: Accept = {
-            type: acceptTypes[randomType],
-            value: acceptValue
-        }
-        accepts.push(accept);
-        agentSpecs.push({id:x+1, accepts: accepts});   
+export function getRandomAgentSpec(): AgentSpec {
+    let agentSpec: AgentSpec; 
+    let accepts: Accept[] = [];
+
+    // allow 1 accept per agent (for now)
+    // randomly select one of the 5 accept types (0 - 4)
+    let randomType: number = Math.floor(Math.random() * (5));
+    let acceptValue = getAgentSpecsValue(acceptTypes[randomType]);
+    let accept: Accept = {
+        type: acceptTypes[randomType],
+        value: acceptValue
     }
-    return agentSpecs; 
+    accepts.push(accept);    
+    agentSpec = {id:0, accepts: accepts}
+    return agentSpec; 
 }
 
 const getAgentSpecsValue= (type: AcceptType) : any => {
@@ -108,4 +106,21 @@ const getAgentSpecsValue= (type: AcceptType) : any => {
         break; 
     }
     return result;
+}
+
+/**
+ * Returns a fake consumer spec with random values. 
+ */
+export function getRandomConsumerSpec() : ConsumerSpec {
+    let consumerSpec: ConsumerSpec = { 
+        id: 0,
+        phone: Math.floor(Math.random() * 10000000000),
+        age: Math.floor(Math.random() * (65 - 18 + 1) + 18),
+        cars: Math.floor(Math.random() * 4), // up to 3 cars
+        income: Math.floor(Math.random() * (1000000 - 20000) + 20000),
+        kids: Math.floor(Math.random() * 6), // up to 5 kids
+        state: faker.address.state(),
+        isRenting: faker.random.boolean()
+    }
+    return consumerSpec;
 }

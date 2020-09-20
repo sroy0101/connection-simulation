@@ -29,6 +29,7 @@ export class Agent {
      * Sets itself to busy state - for a time period. 
      */
     connect = () : boolean => {
+        this.callsReceived++;
         this.isBusy = true; 
         // Wait 50 to 300ms. 
         randomDelay(50, 300).then(() => {

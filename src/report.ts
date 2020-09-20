@@ -57,8 +57,10 @@ export class Report {
      * 2. agents - containing the agents attributes
      * 3. callMetrics - agent: voicemails count, calls count. consumer: callback count
      */
-    createReport = () => {
+    createReports = () => {
         this.createConsumerReport(); 
+        this.createAgentReport();
+        this.createMetricsReport();
 
     }
 
