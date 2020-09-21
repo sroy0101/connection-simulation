@@ -70,15 +70,19 @@ export function getRandomAgentSpec(): AgentSpec {
     let agentSpec: AgentSpec; 
     let accepts: Accept[] = [];
 
-    // allow 1 accept per agent (for now)
-    // randomly select one of the 5 accept types (0 - 4)
-    let randomType: number = Math.floor(Math.random() * (5));
-    let acceptValue = getAgentSpecsValue(acceptTypes[randomType]);
-    let accept: Accept = {
-        type: acceptTypes[randomType],
-        value: acceptValue
+    // allow 2 accept types per agent (for now)
+    let accept: Accept;
+    for(let x=0; x < 2; x++) {
+        // randomly select one of the 5 accept types (0 - 4)
+        let randomType: number = Math.floor(Math.random() * (5));
+        let acceptValue = getAgentSpecsValue(acceptTypes[randomType]);
+        accept = {
+            type: acceptTypes[randomType],
+            value: acceptValue
+        }
+        accepts.push(accept);    
     }
-    accepts.push(accept);    
+    
     agentSpec = {id:0, accepts: accepts}
     return agentSpec; 
 }

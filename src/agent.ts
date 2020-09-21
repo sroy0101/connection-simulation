@@ -52,7 +52,7 @@ export class Agent {
      * Then removes the message from the list. 
      */
     callConsumer = () => {
-        const PROCESS_MESSAGES_RATE_MS = 1000;
+        const PROCESS_MESSAGES_RATE_MS = 500;
 
         const interval = setInterval(() => {
             if(!this.isBusy && this.messages.length) {
@@ -64,10 +64,5 @@ export class Agent {
             }
         }, PROCESS_MESSAGES_RATE_MS)
         return interval;
-    }
-
-
-
-
-    
+    }    
 }
