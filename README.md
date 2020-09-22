@@ -25,7 +25,7 @@ Three reports are generated and stored in three CSV files:
 Note: The file folder name can be configured in the env.ts file. 
 
 ### How to Use
-1. Clone the application from here: [https://github.com/sroy0101/connection-simulation] to your local folder. 
+1. Clone this application to your local folder. 
 2. Install: 
 > npm install
 3. Run the app: 
