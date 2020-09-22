@@ -25,7 +25,6 @@ let consumerSpec: ConsumerSpec = {
 let agentSpecs: AgentSpec[] = [];
 
 describe('perform unit tests', () => {
-
     describe('consumer tests', () => {
         afterEach(() => {
             sinon.restore();
@@ -92,7 +91,7 @@ describe('perform unit tests', () => {
         });
         it('returns calls for left messages', () => {        
             let consumer: Consumer = new Consumer(consumerSpec, router);
-            const spy = sinon.spy(consumer, 'messageCallBack');
+            const stub = sinon.stub(consumer, "messageCallBack").returns(false);
             
             let agent : Agent = new Agent(agentSpecs[0], router);
             let message: Message = {
@@ -104,9 +103,8 @@ describe('perform unit tests', () => {
             agent.saveMessage(message);
 
             setTimeout(() => {
-                expect(spy.callCount).equal(2);
-            }, 3000)
-           
+                expect(stub.callCount).equal(2);
+            }, 2000);           
         });
     });
 

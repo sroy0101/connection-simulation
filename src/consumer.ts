@@ -35,13 +35,6 @@ export class Consumer {
         
         return this.connected;
     }
-
-    /**
-     * Aborts an existing connection attempt. 
-     */
-    abortConnection = () => {
-        this.isAbort = true; 
-    }
     
     /**
      * Receiver of calls from an agent in response

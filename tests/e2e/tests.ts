@@ -2,11 +2,11 @@ import "mocha";
 import * as chai from "chai";
 
 import { Consumer } from "../../src/consumer";
-import {ConsumerSpec, AgentSpec, getRandomAgentSpec, getRandomConsumerSpec, randomDelay} from "../../src/common";
+import {ConsumerSpec, AgentSpec, getRandomAgentSpec, getRandomConsumerSpec, randomDelay } from "../../src/common";
 import { Router } from "../../src/router";
 import { Agent } from "../../src/agent";
-import { Report, ConsumerRecord } from "../../src/report";
-import { assert } from "chai";
+import { Report } from "../../src/report";
+import { assert } from "console";
 
 const expect = chai.expect;
 let router = Router.instance();
@@ -14,7 +14,7 @@ let router = Router.instance();
 describe('simulate connections between consumer and agents', () => {
     it('uses 1000 consumers and 20 agents', async () => {
         
-        const requiredConsumers = 10000;         
+        const requiredConsumers = 1000;         
         const requiredAgents = 20; 
         const printDetails = false;
         const generateReport = true;
@@ -39,11 +39,8 @@ describe('simulate connections between consumer and agents', () => {
         consumers.forEach(consumer => {
             consumer.startConnection();
         })
-
-        //await(randomDelay(30000, 40000));   
-        setTimeout(() => {            
+        setTimeout(() => {
             printResults(consumers, agents, printDetails);
-
             // generate Report
             if(generateReport) {
                 const report = new Report(); 
@@ -53,11 +50,17 @@ describe('simulate connections between consumer and agents', () => {
                 agents.forEach(agent => {
                     report.updateAgentRecord(agent);
                 })
-                report.createReports(); 
+                report.createReports().then(() => {
+                    console.log('Report files are created.'); 
+                    assert(true);
+                    process.exit(0);
+                }).catch(error => {
+                    console.error(error);
+                    assert(false);
+                    process.exit();
+                });                  
             }
-        }, 40000)  ; 
-
-
+        }, 30000)        
     });
 
     function printResults (consumers: Consumer[], agents: Agent[], printDetails: boolean = true) {

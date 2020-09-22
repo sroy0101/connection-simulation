@@ -9,8 +9,8 @@ const args: string[] = process.argv.slice(2);
 startSimulation();
 
 async function startSimulation () {    
-    let requiredConsumers = 10000;         
-    let waitForConnectionsMin = 60; 
+    let requiredConsumers = 1000;         
+    let waitForConnectionsMin = 5; 
     const requiredAgents = 20; 
     const printDetails = false;
     const generateReport = true;
@@ -63,12 +63,26 @@ async function startSimulation () {
             process.stdout.write(`Ended at - ${today.getHours()}:${today.getMinutes()}\n`);
             
             printResults(consumers, agents, printDetails);
-            if(generateReport) {
-                generateAllReports(consumers, agents);        
-            }            
-            console.log('Have a nice day.. :)');
             clearInterval(interval);
-            process.exit(0);
+
+            if(generateReport) {
+                console.log('starting reports..')
+                const report = new Report(); 
+                consumers.forEach(consumer => {
+                    report.updateConsumerRecord(consumer);
+                });
+                agents.forEach(agent => {
+                    report.updateAgentRecord(agent);
+                })
+                report.createReports().then(() => {
+                    console.log('Report files are created.'); 
+                    process.exit(0);
+                }).catch(error => {
+                    console.error(error);
+                    process.exit(1);
+                });                  
+            }        
+            
         } else {
             process.stdout.write(' . ');
         }
@@ -105,18 +119,4 @@ function printResults (consumers: Consumer[], agents: Agent[], printDetails: boo
             console.log(`agent id = ${agent.agentSpec.id}; calls Received = ${agent.callsReceived}; messages Received = ${agent.messagesReceived}; accepts = ${JSON.stringify(agent.agentSpec.accepts)}; `)
         });
     }
-}
-
-async function generateAllReports(consumers: Consumer[], agents: Agent[]) {
-    console.log('starting reports..')
-    const report = new Report(); 
-    consumers.forEach(consumer => {
-        report.updateConsumerRecord(consumer);
-    });
-    agents.forEach(agent => {
-        report.updateAgentRecord(agent);
-    })
-    report.createReports(); 
-    await randomDelay(5000, 5500);
-    console.log('Report files are created.');        
 }

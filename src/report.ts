@@ -5,8 +5,6 @@ import {Consumer} from "./consumer";
 import {Agent} from "./agent";
 import {FilePaths} from "./env";
 
-
-
 const createCsvWriter = csvWriter.createObjectCsvWriter;
 
 export interface AgentRecord {
@@ -58,13 +56,20 @@ export class Report {
      * 3. callMetrics - agent: voicemails count, calls count. consumer: callback count
      */
     createReports = () => {
-        this.createConsumerReport(); 
-        this.createAgentReport();
-        this.createMetricsReport();
-
+        return new Promise((resolve, reject) =>  {
+            this.createConsumerReport().then(() => {
+                this.createAgentReport().then( () => {
+                    this.createMetricsReport().then(() => {
+                        resolve();
+                    })
+                })
+            }).catch((error) => {
+                reject('Report creation failed.')
+            })
+        })
     }
 
-    createConsumerReport = () => {
+    createConsumerReport = () => {       
         const csvCreate = createCsvWriter( {
             path: FilePaths.consumerFilePath,
             header: [
@@ -82,15 +87,19 @@ export class Report {
         });
         this.isFileSavedSuccess = false; 
         let that = this;
-        csvCreate.writeRecords(records)
-            .then(() => {
-                that.isFileSavedSuccess = true;
-            }).catch((error) => {
-                console.error(`Create consumer record file error.\n ${error}`);
-            });
+        return new Promise((resolve, reject) => {            
+            csvCreate.writeRecords(records)
+                .then(() => {
+                    that.isFileSavedSuccess = true;
+                    resolve();
+                }).catch((error) => {
+                    console.error(`Create consumer record file error.\n ${error}`);
+                    reject();
+                });            
+        });
     }
 
-    createAgentReport = () => {
+    createAgentReport = async () => {
         const csvCreate = createCsvWriter( {
             path: FilePaths.agentFilePath,
             header: [
@@ -108,15 +117,19 @@ export class Report {
         });
         this.isFileSavedSuccess = false; 
         let that = this;
-        csvCreate.writeRecords(records)
-            .then(() => {
-                that.isFileSavedSuccess = true;
-            }).catch((error) => {
-                console.error(`Create agent record file error.\n ${error}`);
-            });
+        return new Promise((resolve, reject) => {          
+            csvCreate.writeRecords(records)
+                .then(() => {
+                    that.isFileSavedSuccess = true;
+                    resolve();
+                }).catch((error) => {
+                    console.error(`Create agent record file error.\n ${error}`);
+                    reject();
+                });
+        });
     }
 
-    createMetricsReport = () => {
+    createMetricsReport = async () => {
         const csvCreate = createCsvWriter( {
             path: FilePaths.metricsFilePath,
             header: [                
@@ -148,12 +161,16 @@ export class Report {
         });
         this.isFileSavedSuccess = false; 
         let that = this;
-        csvCreate.writeRecords(records)
+        return new Promise((resolve, reject) => {          
+            csvCreate.writeRecords(records)
             .then(() => {
                 that.isFileSavedSuccess = true;
+                resolve();
             }).catch((error) => {
                 console.error(`Create metrics record file error.\n ${error}`);
+                reject();
             });
+        });
     }
 
 
