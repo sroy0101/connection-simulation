@@ -1,5 +1,4 @@
 # Connection-Simulation
-A simulation of connections between a pool of consumers and agents. 
 
 A nodejs/typescript application to simulate the connections of thousands of consumers trying to connect to a pool of agents and collect various  metrics about the process. The generated data is stored in CSV files. 
 
@@ -34,7 +33,7 @@ Note: The file folder name can be configured in the env.ts file.
 
 The Run command will display the following on the terminal: 
 
-![run.png](https://gihub.com/sroy0101/connection-simulation/images/run.png)
+![run.png](https://raw.githubusercontent.com/sroy0101/connection-simulation/master/images/run.PNG)
 
 #### Note
 You can use larger number of consumers. 
