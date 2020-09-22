@@ -34,7 +34,7 @@ Note: The file folder name can be configured in the env.ts file.
 
 The Run command will display the following on the terminal: 
 
-![run.png](./images/run.png)
+![run.png](images/run.png)
 
 #### Note
 You can use larger number of consumers. 
