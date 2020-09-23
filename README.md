@@ -79,6 +79,8 @@ The simulation is initiated and orchestrated by the app module.
 
 ![sequence-diagram](https://raw.githubusercontent.com/sroy0101/connection-simulation/master/images/sequence-diagram.png)
 
+
+
 ## Possible Future Improvements
 1. Refactor the app into a web app so that the simulations can be run from a browser.
 2. Graphical display of the simulation results. 
