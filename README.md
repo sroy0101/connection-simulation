@@ -75,6 +75,10 @@ Both unit and e2e tests are provided.
 
 The simulation is initiated and orchestrated by the app module. 
 
+## Sequence Diagram
+
+![sequence-diagram](https://raw.githubusercontent.com/sroy0101/connection-simulation/master/images/sequence-diagram.PNG)
+
 ## Possible Future Improvements
 1. Refactor the app into a web app so that the simulations can be run from a browser.
 2. Graphical display of the simulation results. 
