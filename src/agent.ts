@@ -1,4 +1,3 @@
-import { random } from "faker";
 import { AgentSpec, Message, randomDelay } from "./common";
 import { Router } from "./router";
 
@@ -29,13 +28,17 @@ export class Agent {
      * Sets itself to busy state - for a time period. 
      */
     connect = () : boolean => {
+        let result = false;
         this.callsReceived++;
-        this.isBusy = true; 
-        // Wait 50 to 300ms. 
-        randomDelay(50, 300).then(() => {
-            this.isBusy = false;            
-        })
-        return true;
+        if(!this.isBusy) {
+            this.isBusy = true; 
+            result = true;
+            // Wait 50 to 300ms. 
+            randomDelay(50, 300).then(() => {
+                this.isBusy = false;            
+            })
+        }        
+        return result;
     }
 
     /**
@@ -48,21 +51,22 @@ export class Agent {
     }
 
     /**
-     * Checks every 1 second and if not busy calls consumers in the message list. 
-     * Then removes the message from the list. 
+     * Checks every second and calls consumers in the message list. 
+     * Then removes the message from the list if the call was successful. 
      */
     callConsumer = () => {
-        const PROCESS_MESSAGES_RATE_MS = 500;
-
+        const PROCESS_MESSAGES_RATE_MS = 1000;        
         const interval = setInterval(() => {
-            if(!this.isBusy && this.messages.length) {
-                let message : Message = this.messages[0]; 
+            this.isBusy = true;
+            for(let x = 0; x < this.messages.length; x++) {
+                let message : Message = this.messages[x]; 
                 // if the consumer was not busy, ie accepted the call, remove the message from message list. 
                 if(!message.callBack()) {
-                    this.messages.splice(0, 1);
+                    this.messages.splice(x, 1);
                 }
             }
-        }, PROCESS_MESSAGES_RATE_MS)
+            this.isBusy = false;                    
+        }, PROCESS_MESSAGES_RATE_MS);
         return interval;
     }    
 }

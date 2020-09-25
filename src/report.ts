@@ -99,7 +99,7 @@ export class Report {
         });
     }
 
-    createAgentReport = async () => {
+    createAgentReport = () => {
         const csvCreate = createCsvWriter( {
             path: FilePaths.agentFilePath,
             header: [
@@ -129,7 +129,7 @@ export class Report {
         });
     }
 
-    createMetricsReport = async () => {
+    createMetricsReport = () => {
         const csvCreate = createCsvWriter( {
             path: FilePaths.metricsFilePath,
             header: [                

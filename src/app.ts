@@ -17,7 +17,6 @@ async function startSimulation () {
 
     for(let x=0; x < args.length; x++) {
         requiredConsumers = parseInt(args[0]); 
-        waitForConnectionsMin = parseInt(args[1])
     }
     console.log(`Starting simulation - Consumers : ${requiredConsumers}, Agents : ${requiredAgents}. Print Details : ${printDetails}. Generate Reports : ${generateReport} `);
 
@@ -39,17 +38,20 @@ async function startSimulation () {
         consumers.push(new Consumer(consumerSpec, router));            
     }
 
-    // start calls 
     console.log(`Initiating ${requiredConsumers} connections ....`);
-    consumers.forEach(consumer => {
-        consumer.startConnection();
-    })
-
-
+    for( let consumer of consumers)  {
+        // Add the delay below between start connections to prevent almost all the connections being done through the messaging and callback. 
+        await randomDelay(5, 10).then (() => {
+            consumer.startConnection();
+        })
+    }
+    
     let timesRun = Math.floor(waitForConnectionsMin * 60 * 1000 / 10000);
     console.log(`waiting for up to ${waitForConnectionsMin} minutes, and checking every 10 secs to see if all consumers are connected ....`);
+    
     let today = new Date();
-    process.stdout.write(`started at - ${today.getHours()}:${today.getMinutes()}`);
+    process.stdout.write(`started at - ${today.getHours()}:${today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()}`);
+    // start calls 
     const interval = setInterval(function(){
         let allConnected = true;
         for(let x=0; x < consumers.length; x++) {
@@ -60,7 +62,7 @@ async function startSimulation () {
         }
         if(timesRun-- === 0 || allConnected) {
             today = new Date();
-            process.stdout.write(`Ended at - ${today.getHours()}:${today.getMinutes()}\n`);
+            process.stdout.write(`Ended at - ${today.getHours()}:${today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()}\n`);
             
             printResults(consumers, agents, printDetails);
             clearInterval(interval);

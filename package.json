@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node ./dist/src/app 1000 5",
-    "start-5000-10": "tsc && node ./dist/src/app 5000 10",
-    "start-10000-60": "tsc && node ./dist/src/app 10000 60",
+    "start-5000": "tsc && node ./dist/src/app 5000 5",
+    "start-10000": "tsc && node ./dist/src/app 10000 5",
     "test": "mocha --exit --require ts-node/register tests/tests.ts",
     "test-reports": "mocha --exit --require ts-node/register tests/test-reports.ts",
     "test-e2e": "mocha --require ts-node/register tests/e2e/*.ts"

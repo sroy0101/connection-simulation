@@ -37,13 +37,13 @@ The Run command will display the following on the terminal:
 
 #### Note
 You can use larger number of consumers. 
-> npm run start-5000-10
-> npm run start-10000-60
+> npm run start-5000
+> npm run start-10000
 
-Or, use the node command directly to use any custom values for the consumer and the run time. From the root folder:
-> node ./dist/src/app [number of consumers] [run time]
+Or, use the node command directly to use a custom value for the number of consumers. From the root folder:
+> node ./dist/src/app [number of consumers]
 
-> example: node ./dist/src/app 500 1  
+> example: node ./dist/src/app 500  
 
 Note: The run will end if all the consumers are connected, even if the end of run time is not reached.
 Also, the run will end at the end of run time even if there are consumers not connected. 

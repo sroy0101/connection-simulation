@@ -12,7 +12,7 @@ const expect = chai.expect;
 let router = Router.instance();
 
 describe('simulate connections between consumer and agents', () => {
-    it('uses 1000 consumers and 20 agents', async () => {
+    it('uses 1000 consumers and 20 agents', () => {
         
         const requiredConsumers = 1000;         
         const requiredAgents = 20; 
