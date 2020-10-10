@@ -93,10 +93,14 @@ export class Router {
                         }
                     break;
                 }
+                if(!gotMatch) {
+                    break;
+                }
             }
             if(gotMatch) {
                 result.push(agent);
             }
+            
         }
         // If multiple agents found, pick one at random. 
         let selectIndex = Math.floor(Math.random() * result.length);
